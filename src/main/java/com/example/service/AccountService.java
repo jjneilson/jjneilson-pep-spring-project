@@ -1,28 +1,39 @@
 package com.example.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.entity.Account;
 import com.example.repository.AccountRepository;
 
+@Service
 public class AccountService {
 
+    @Autowired
     private final  AccountRepository accountRepository;
 
+    @Autowired
     public AccountService(AccountRepository accountRepository){
         this.accountRepository = accountRepository;
     }
 
     public Account registerAccount(Account account){
-        boolean notexists=accountRepository.getAccountByUsername(account.getUsername())==null;
-        boolean notblank=account.getUsername().length()>0;
-        boolean nottooshort=account.getPassword().length()>4;
-        if (notexists && notblank && nottooshort) return this.accountRepository.save(account);
-        return null;
+        return this.accountRepository.save(account);
     }
 
-    public Account login(Account account){
-        Account possibleaccount = this.accountRepository.getAccountByUsername(account.getUsername());
+    public Account findByAccountId(int accountId){
+        return this.accountRepository.findByAccountId(accountId);
+    }
+
+    public Account findByUsername(String username){
+        return this.accountRepository.findByUsername(username);
+    }
+
+    public Account loginUser(Account account){
+        Account possibleaccount = this.accountRepository.findByUsername(account.getUsername());
         if (possibleaccount!=null && possibleaccount.getPassword().equals(account.getPassword()))
             return possibleaccount;
         return null;
     }
+
 }
